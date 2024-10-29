@@ -1,0 +1,61 @@
+name: Check Test Coverage
+
+on:
+  push:
+    paths:
+      - 'src/services/**'  # Trigger on changes in src/services/
+    branches:
+      - main  # Adjust this to your default branch
+  pull_request:
+    paths:
+      - 'src/services/**'  # Trigger on pull requests with changes in src/services/
+    branches:
+      - main  # Adjust this to your default branch
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # Updated to the latest version
+
+      - name: Set up Go
+        uses: actions/setup-go@v4  # Updated to the latest version
+        with:
+          go-version: '1.21'  # Updated to the latest Go version
+
+      - name: Install dependencies
+        run: |
+          # Iterate through each service and download dependencies
+          for service in src/services/*; do
+            if [ -d "$service" ]; then
+              echo "Installing dependencies for $(basename "$service")..."
+              cd "$service"
+              go mod download
+              cd -  # Return to the root directory
+            fi
+          done
+
+      - name: Run tests and collect coverage
+        run: |
+          # Iterate through each service and run tests
+          for service in src/services/*; do
+            service_name=$(basename "$service")
+            echo "Service name - $service_name"
+            
+            if [ -d "$service/tests" ]; then
+              # Run tests in the tests package
+              go test -coverprofile=coverage.out "$service/tests" && \
+              go tool cover -func=coverage.out && \
+              echo ""  # Add an empty line for better readability
+            elif [ -f "$service/main_test.go" ]; then
+              # Run tests in the main_test.go file
+              go test -coverprofile=coverage.out "$service" && \
+              go tool cover -func=coverage.out && \
+              echo ""  # Add an empty line for better readability
+            fi
+
+            # Clean up coverage output
+            rm coverage.out
+          done
