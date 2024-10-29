@@ -55,7 +55,7 @@ jobs:
             fi
             
             if [ -f "$service/coverage.out" ]; then
-            echo "Current directory before copying coverage: $(pwd)"
+            echo "Current directory before copying coverage: $(pwd/src/services)"
             ls -la
               cd "$service"
               echo "Current directory when processing coverage: $(pwd) and $service"  # Log the current directory
