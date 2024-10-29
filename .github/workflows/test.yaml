@@ -39,23 +39,24 @@ jobs:
 
       - name: Run tests and collect coverage
         run: |
-          # Iterate through each service and run tests
+          echo "##[group]Running tests for each service"
           for service in src/services/*; do
             service_name=$(basename "$service")
             echo "Service name - $service_name"
             
             if [ -d "$service/tests" ]; then
-              # Run tests in the tests package
-              go test -coverprofile=coverage.out "$service/tests" && \
-              go tool cover -func=coverage.out && \
-              echo ""  # Add an empty line for better readability
+              # Check if coverage file exists before running tests
+              go test -coverprofile="$service/coverage.out" "$service/tests" || exit 1
             elif [ -f "$service/main_test.go" ]; then
               # Run tests in the main_test.go file
-              go test -coverprofile=coverage.out "$service" && \
-              go tool cover -func=coverage.out && \
-              echo ""  # Add an empty line for better readability
+              go test -coverprofile="$service/coverage.out" "$service" || exit 1
             fi
-
-            # Clean up coverage output
-            rm coverage.out
+            
+            # Check if coverage file was created before trying to remove it
+            if [ -f "$service/coverage.out" ]; then
+              go tool cover -func="$service/coverage.out"
+              rm "$service/coverage.out"
+            fi
           done
+          echo "##[endgroup]"
+
