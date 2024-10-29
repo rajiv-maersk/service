@@ -34,6 +34,7 @@ jobs:
             if [ -d "$service" ]; then
               echo "Installing dependencies for $(basename "$service")..."
               cd "$service"
+              echo "Current directory: $(pwd)"  # Log the current directory
               go mod download
               cd -  # Return to the root directory
             fi
@@ -45,22 +46,17 @@ jobs:
             service_name=$(basename "$service")
             echo "Service name - $service_name"
             
-            # Check if the directory has a go.mod file
-            if [ -f "$service/go.mod" ]; then
-              if [ -d "$service/tests" ]; then
-                # Navigate to the service directory and run tests
-                (cd "$service" && go test -coverpkg=./... -coverprofile=coverage.out ./tests) || exit 1
-              elif [ -f "$service/main_test.go" ]; then
-                # Run tests in the main_test.go file
-                (cd "$service" && go test -coverpkg=./... -coverprofile=coverage.out .) || exit 1
-              fi
-              
-              # Process the coverage file
-              if [ -f "$service/coverage.out" ]; then
-                go tool cover -func="$service/coverage.out"
-                rm "$service/coverage.out"
-              fi
-            else
-              echo "Skipping $service_name: No go.mod file found."
+            if [ -d "./$service/tests" ]; then
+              # Navigate to the service directory and run tests
+              (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out ./tests) || exit 1
+            elif [ -f "./$service/main_test.go" ]; then
+              # Run tests in the main_test.go file
+              (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out .) || exit 1
+            fi
+            
+            if [ -f "./$service/coverage.out" ]; then
+              echo "Current directory when processing coverage: $(pwd)"  # Log the current directory
+              go tool cover -func="./$service/coverage.out"
+              rm "./$service/coverage.out"
             fi
           done
