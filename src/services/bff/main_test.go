@@ -1,4 +1,4 @@
-package tests
+package main
 
 import (
 	"fmt"
@@ -39,7 +39,7 @@ func TestSub(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%d-%d", tt.a, tt.b), func(t *testing.T) {
-			got := helpers.Sub(tt.a, tt.b)
+			got := Sub(tt.a, tt.b)
 			if got != tt.expected {
 				t.Errorf("Sub(%d, %d) = %d; want %d", tt.a, tt.b, got, tt.expected)
 			}

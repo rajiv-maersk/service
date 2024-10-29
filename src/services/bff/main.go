@@ -9,10 +9,15 @@ import (
 	"go.uber.org/zap"
 )
 
+// Sub returns the difference of two integers.
+func Sub(a, b int) int {
+	return a - b
+}
+
 func main() {
 	a, b := 5, 3
 	sum := helpers.Add(a, b)
-	difference := helpers.Sub(a, b)
+	difference := Sub(a, b)
 
 	logger, _ := zap.NewProduction()
 	defer logger.Sync()

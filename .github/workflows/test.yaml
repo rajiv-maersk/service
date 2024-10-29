@@ -44,7 +44,7 @@ jobs:
         run: |
           for service in src/services/*; do
             service_name=$(basename "$service")
-            echo "Service name - $service_name"
+            echo "Service name: $service_name"
             if [ -d "$service/tests" ]; then
               (cd "$service" && \
               go test -coverpkg=./... -coverprofile=coverage.out ./tests) || exit 1
