@@ -3,16 +3,16 @@ name: Check Test Coverage
 on:
   push:
     paths:
-      - 'src/services/**'  # Trigger on changes in src/services/
-      - '.github/workflows/test.yaml'  # Trigger on changes in the workflow file
-      - '*'  # Also trigger on any other changes
+      - 'src/services/**'               # Trigger on changes in src/services/
+      - '.github/workflows/test.yaml'   # Trigger on changes in the workflow file
+      - '*'                               # Also trigger on any other changes
     branches:
-      - main  # Adjust this to your default branch
+      - main                              # Adjust this to your default branch
   pull_request:
     paths:
-      - 'src/services/**'  # Trigger on pull requests with changes in src/services/
+      - 'src/services/**'               # Trigger on pull requests with changes in src/services/
     branches:
-      - main  # Adjust this to your default branch
+      - main                             # Adjust this to your default branch
 
 jobs:
   coverage:
@@ -25,7 +25,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4  # Updated to the latest version
         with:
-          go-version: '1.21'  # Updated to the latest Go version
+          go-version: '1.21'       # Updated to the latest Go version
 
       - name: Install dependencies
         run: |
@@ -46,16 +46,24 @@ jobs:
             service_name=$(basename "$service")
             echo "Service name - $service_name"
             
-            if [ -d "./$service/tests" ]; then
+            if [ -d "$service/tests" ]; then
               # Navigate to the service directory and run tests
-              (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out ./tests && ls -la) || exit 1
-            elif [ -f "./$service/main_test.go" ]; then
+              (cd "$service" && \
+              echo "Current directory before testing: $(pwd)" && \
+              go test -coverpkg=./... -coverprofile=coverage.out ./tests && \
+              ls -la) || exit 1
+            elif [ -f "$service/main_test.go" ]; then
               # Run tests in the main_test.go file
-              (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out . && ls -la) || exit 1
+              (cd "$service" && \
+              echo "Current directory before testing: $(pwd)" && \
+              go test -coverpkg=./... -coverprofile=coverage.out . && \
+              ls -la) || exit 1
             fi
             
-            if [ -f "$(pwd/$service/coverage.out" ]; then
+            # Check for coverage.out file and remove it
+            if [ -f "$service/coverage.out" ]; then
               cd "$service"
+              echo "Current directory when processing coverage: $(pwd)"  # Log the current directory
               ls -la
               rm "coverage.out"  # Remove the old coverage file
             fi
