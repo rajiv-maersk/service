@@ -55,4 +55,5 @@ jobs:
             fi
             cd "$service"
             rm "coverage.out"  # Remove the old coverage file
+            cd -  # Return to the root directory
           done
