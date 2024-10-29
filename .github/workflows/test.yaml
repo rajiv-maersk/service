@@ -45,26 +45,18 @@ jobs:
           for service in src/services/*; do
             service_name=$(basename "$service")
             echo "Service name - $service_name"
-            
             if [ -d "$service/tests" ]; then
               # Navigate to the service directory and run tests
               (cd "$service" && \
               echo "Current directory before testing: $(pwd)" && \
-              go test -coverpkg=./... -coverprofile=coverage.out ./tests && \
-              ls -la) || exit 1
+              go test -coverpkg=./... -coverprofile=coverage.out ./tests) || exit 1
             elif [ -f "$service/main_test.go" ]; then
               # Run tests in the main_test.go file
               (cd "$service" && \
               echo "Current directory before testing: $(pwd)" && \
-              go test -coverpkg=./... -coverprofile=coverage.out . && \
-              ls -la) || exit 1
+              go test -coverpkg=./... -coverprofile=coverage.out .) || exit 1
             fi
-            
-            # Check for coverage.out file and remove it
-            if [ -f "$service/coverage.out" ]; then
-              cd "$service"
-              echo "Current directory when processing coverage: $(pwd)"  # Log the current directory
-              ls -la
-              rm "coverage.out"  # Remove the old coverage file
+            cd "$service"
+            rm "coverage.out"  # Remove the old coverage file
             fi
           done
