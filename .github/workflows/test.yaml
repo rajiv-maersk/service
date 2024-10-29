@@ -5,7 +5,7 @@ on:
     paths:
       - 'src/services/**'  # Trigger on changes in src/services/
       - '.github/workflows/test.yaml'  # Trigger on changes in the workflow file
-      - '*'
+      - '*'  # Also trigger on any other changes
     branches:
       - main  # Adjust this to your default branch
   pull_request:
@@ -41,24 +41,21 @@ jobs:
 
       - name: Run tests and collect coverage
         run: |
-          echo "##[group]Running tests for each service"
           for service in src/services/*; do
             service_name=$(basename "$service")
             echo "Service name - $service_name"
             
-            if [ -d "$service/tests" ]; then
-              # Check if coverage file exists before running tests
-              go test -coverprofile="$service/coverage.out" "$service/tests" || exit 1
-            elif [ -f "$service/main_test.go" ]; then
+            if [ -d "./$service/tests" ]; then
+              # Navigate to the service directory and run tests
+              (cd "$service" && go test -coverprofile=coverage.out ./tests) || exit 1
+            elif [ -f "./$service/main_test.go" ]; then
               # Run tests in the main_test.go file
-              go test -coverprofile="$service/coverage.out" "$service" || exit 1
+              (cd "$service" && go test -coverprofile=coverage.out .) || exit 1
             fi
             
             # Check if coverage file was created before trying to remove it
-            if [ -f "$service/coverage.out" ]; then
-              go tool cover -func="$service/coverage.out"
-              rm "$service/coverage.out"
+            if [ -f "./$service/coverage.out" ]; then
+              go tool cover -func="./$service/coverage.out"
+              rm "./$service/coverage.out"
             fi
           done
-          echo "##[endgroup]"
-
