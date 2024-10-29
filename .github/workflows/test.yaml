@@ -54,6 +54,7 @@ jobs:
               go test -coverpkg=./... -coverprofile=coverage.out .) || exit 1
             fi
             cd "$service"
+            ls -l
             rm "coverage.out"  # Remove the old coverage file
             ls -l
             cd -  # Return to the root directory
