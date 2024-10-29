@@ -29,14 +29,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Iterate through each service and download dependencies
           for service in src/services/*; do
             if [ -d "$service" ]; then
               echo "Installing dependencies for $(basename "$service")..."
               cd "$service"
-              echo "Current directory: $(pwd)"  # Log the current directory
               go mod download
-              cd -  # Return to the root directory
+              cd -
             fi
           done
 
@@ -55,5 +53,5 @@ jobs:
             fi
             cd "$service"
             rm "coverage.out"  # Remove the old coverage file
-            cd -  # Return to the root directory
+            cd -
           done
