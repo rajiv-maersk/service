@@ -8,12 +8,6 @@ on:
       - '.github/workflows/test.yaml'
       - 'src/services/**'
 
-  push:
-    branches: [dev, test, preprod, main]
-    paths:
-      - '.github/workflows/test.yaml'
-      - 'src/services/**'
-
 jobs:
   coverage:
     runs-on: ubuntu-latest
@@ -26,17 +20,6 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.22'
-
-      - name: Install dependencies
-        run: |
-          for service in src/services/*; do
-            if [ -d "$service" ]; then
-              echo "Installing dependencies for $(basename "$service")..."
-              cd "$service"
-              go mod download
-              cd -
-            fi
-          done
 
       - name: Run tests and collect coverage
         run: |
