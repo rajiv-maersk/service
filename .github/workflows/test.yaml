@@ -1,18 +1,18 @@
 name: Check Test Coverage
 
 on:
-  push:
-    paths:
-      - 'src/services/**'               # Trigger on changes in src/services/
-      - '.github/workflows/test.yaml'   # Trigger on changes in the workflow file
-      - '*'                               # Also trigger on any other changes
-    branches:
-      - main                              # Adjust this to your default branch
+  workflow_dispatch:
   pull_request:
+    branches: [dev, test, preprod, main]
     paths:
-      - 'src/services/**'               # Trigger on pull requests with changes in src/services/
-    branches:
-      - main                             # Adjust this to your default branch
+      - '.github/workflows/test.yaml'
+      - 'src/services/**'
+
+  push:
+    branches: [dev, test, preprod, main]
+    paths:
+      - '.github/workflows/test.yaml'
+      - 'src/services/**'
 
 jobs:
   coverage:
@@ -20,12 +20,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Updated to the latest version
+        uses: actions/checkout@v3
 
       - name: Set up Go
-        uses: actions/setup-go@v4  # Updated to the latest version
+        uses: actions/setup-go@v4
         with:
-          go-version: '1.21'       # Updated to the latest Go version
+          go-version: '1.22'
 
       - name: Install dependencies
         run: |
@@ -54,8 +54,6 @@ jobs:
               go test -coverpkg=./... -coverprofile=coverage.out .) || exit 1
             fi
             cd "$service"
-            ls -l
             rm "coverage.out"  # Remove the old coverage file
-            ls -l
             cd -  # Return to the root directory
           done
