@@ -55,6 +55,7 @@ jobs:
             fi
             
             if [ -f "./$service/coverage.out" ]; then
+              cd "$service"
               echo "Current directory when processing coverage: $(pwd)"  # Log the current directory
               go tool cover -func="./$service/coverage.out"
               rm "./$service/coverage.out"
