@@ -47,13 +47,12 @@ jobs:
             
             if [ -d "./$service/tests" ]; then
               # Navigate to the service directory and run tests
-              (cd "$service" && go test -coverprofile=coverage.out ./tests) || exit 1
+              (cd "$service" && go test -coverpkg=./... -coverprofile=coverage.out ./tests) || exit 1
             elif [ -f "./$service/main_test.go" ]; then
               # Run tests in the main_test.go file
-              (cd "$service" && go test -coverprofile=coverage.out .) || exit 1
+              (cd "$service" && go test -coverpkg=./... -coverprofile=coverage.out .) || exit 1
             fi
             
-            # Check if coverage file was created before trying to remove it
             if [ -f "./$service/coverage.out" ]; then
               go tool cover -func="./$service/coverage.out"
               rm "./$service/coverage.out"
