@@ -54,7 +54,8 @@ jobs:
               (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out . && ls -la) || exit 1
             fi
             
-            if [ -f "$service/coverage.out" ]; then
+            if [ -f "$(pwd)/coverage.out" ]; then
+            echo "Current directory before copying coverage: $(pwd)"
               cd "$service"
               echo "Current directory when processing coverage: $(pwd) and $service"  # Log the current directory
               ls -la
