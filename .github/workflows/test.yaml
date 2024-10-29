@@ -8,6 +8,12 @@ on:
       - '.github/workflows/test.yaml'
       - 'src/services/**'
 
+  push:
+    branches: [dev, test, preprod, main]
+    paths:
+      - '.github/workflows/test.yaml'
+      - 'src/services/**'
+
 jobs:
   coverage:
     runs-on: ubuntu-latest
