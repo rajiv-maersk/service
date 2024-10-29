@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/services/**'  # Trigger on changes in src/services/
       - '.github/workflows/test.yaml'  # Trigger on changes in the workflow file
+      - '*'
     branches:
       - main  # Adjust this to your default branch
   pull_request:
