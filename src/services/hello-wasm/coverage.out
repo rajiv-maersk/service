@@ -1,0 +1,3 @@
+mode: set
+github.com/rajiv-maersk/service/hello-wasm/add/add.go:4.24,6.2 1 1
+github.com/rajiv-maersk/service/hello-wasm/sub/sub.go:4.24,6.2 1 1
