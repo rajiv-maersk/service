@@ -53,15 +53,10 @@ jobs:
               # Run tests in the main_test.go file
               (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out . && ls -la) || exit 1
             fi
-
-            echo "Current directory after testing: $(pwd)"  # Log the current directory
             
-            if [ -f "$service/coverage.out" ]; then
-            echo "Current directory before copying coverage: $(pwd)/src/services"
-            ls -la
+            if [ -f "$(pwd/$service/coverage.out" ]; then
               cd "$service"
-              echo "Current directory when processing coverage: $(pwd) and $service"  # Log the current directory
               ls -la
-              rm "$path/coverage.out"  # Remove the old coverage file
+              rm "coverage.out"  # Remove the old coverage file
             fi
           done
