@@ -48,10 +48,10 @@ jobs:
             
             if [ -d "./$service/tests" ]; then
               # Navigate to the service directory and run tests
-              (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out ./tests) || exit 1
+              (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out ./tests && ls -la) || exit 1
             elif [ -f "./$service/main_test.go" ]; then
               # Run tests in the main_test.go file
-              (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out .) || exit 1
+              (cd "$service" && echo "Current directory before testing: $(pwd)" && go test -coverpkg=./... -coverprofile=coverage.out . && ls -la) || exit 1
             fi
             
             if [ -f "./$service/coverage.out" ]; then
