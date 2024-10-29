@@ -42,7 +42,10 @@ jobs:
         run: |
           for service in src/services/*; do
             service_name=$(basename "$service")
-            echo "Service name: $service_name"
+
+            # Start a collapsible section for each service
+            echo "::group::Test Coverage for $service_name"
+            
             if [ -d "$service/tests" ]; then
               (cd "$service" && \
               (go test -coverpkg=./... -coverprofile=coverage.out ./tests) &&  (go tool cover -func=coverage.out)) || exit 1
@@ -50,8 +53,10 @@ jobs:
               (cd "$service" && \
               (go test -coverpkg=./... -coverprofile=coverage.out .) &&  (go tool cover -func=coverage.out)) || exit 1
             fi
-            echo ""
-            echo ""
+
+            # End the collapsible section
+            echo "::endgroup::"
+            
             cd "$service"
             rm "coverage.out"
             cd -
