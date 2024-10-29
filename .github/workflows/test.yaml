@@ -50,7 +50,7 @@ jobs:
               (cd "$service" && \
               (go test -coverpkg=./... -coverprofile=coverage.out .) &&  (go tool cover -func=coverage.out)) || exit 1
             fi
-            echo ""
+            echo "\n"
             cd "$service"
             rm "coverage.out"
             cd -
