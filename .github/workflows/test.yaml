@@ -54,25 +54,3 @@ jobs:
             rm "coverage.out"
             cd -
           done
-
-      - name: Post coverage comment
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-
-            let coverageReport = '';
-            for (const service of fs.readdirSync('src/services')) {
-              const servicePath = path.join('src/services', service);
-              if (fs.existsSync(path.join(servicePath, 'coverage.out'))) {
-                const coverage = fs.readFileSync(path.join(servicePath, 'coverage.out'), 'utf8');
-                coverageReport += `### ${service}\n\`\`\`\n${coverage}\n\`\`\`\n`;
-              }
-            }
-
-            github.rest.issues.createComment({
-              ...context.repo,
-              issue_number: context.issue.number,
-              body: `## Test Coverage Report\n${coverageReport}`
-            });
